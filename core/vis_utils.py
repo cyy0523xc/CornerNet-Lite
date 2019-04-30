@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 
-def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.5, colors=None):
+def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.5, colors=None,
+                classes=None):
     """Draws bounding boxes on an image.
 
     Args:
@@ -16,6 +17,7 @@ def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.5, colors=None):
             will be drawn.
         colors: (Optional) Color of bounding boxes for each category. If it is
             not provided, this function will use random color for each category.
+        classes: 只处理某些类别的对象
 
     Returns:
         An image with bounding boxes.
@@ -23,6 +25,8 @@ def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.5, colors=None):
 
     image = image.copy()
     for cat_name in bboxes:
+        if classes is not None and cat_name not in classes:
+            continue    # 不在列表中的对象不进行处理
         keep_inds = bboxes[cat_name][:, -1] > thresh
         cat_size  = cv2.getTextSize(cat_name, cv2.FONT_HERSHEY_SIMPLEX, font_size, 2)[0]
 

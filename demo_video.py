@@ -8,7 +8,8 @@ from core.detectors import CornerNet_Saccade
 from core.vis_utils import draw_bboxes
 
 
-def detect_video(video_path, output_path, start=0, end=0, forbid_box=None):
+def detect_video(video_path, output_path, start=0, end=0, classes=None,
+                 forbid_box=None):
     detector = CornerNet_Saccade()
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():
@@ -19,6 +20,9 @@ def detect_video(video_path, output_path, start=0, end=0, forbid_box=None):
     print(output_path)
     out_fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(output_path, out_fourcc, video_fps, video_size)
+
+    if classes is not None:
+        classes = classes.split(',')
 
     start *= 1000
     end = end if end == 0 else end*1000
@@ -34,9 +38,9 @@ def detect_video(video_path, output_path, start=0, end=0, forbid_box=None):
         if end > 0 and msec > end:
             break
 
-        print('当前时间进度：%.2f秒' % (msec/1000))
         bboxes = detector(frame)
-        image = draw_bboxes(frame, bboxes)
+        print('当前时间进度：%.2f秒, 对象数量：%d' % (msec/1000, len(bboxes)))
+        image = draw_bboxes(frame, bboxes, classes=classes)
         out.write(image)
 
     print("width: %d, height: %d" % (width, height))
