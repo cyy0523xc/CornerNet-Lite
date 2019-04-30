@@ -20,6 +20,7 @@ def set_colors(classes):
         map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)),
             colors))
     colors = {k: v for k, v in zip(classes, colors)}
+    print('Color: ', colors)
 
 
 def detect_video(video_path, output_path, start=0, end=0, classes=None,
