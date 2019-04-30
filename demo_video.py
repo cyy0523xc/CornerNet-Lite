@@ -8,11 +8,18 @@ import colorsys
 from core.detectors import CornerNet_Saccade
 from core.vis_utils import draw_bboxes
 
-# 生成颜色列表
-hsv_tuples = [(x / 80, 1., 1.) for x in range(80)]
-colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
-colors = list(
-    map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)), colors))
+colors = None
+
+
+def set_colors(classes):
+    global colors
+    # 生成颜色列表
+    hsv_tuples = [(x / len(classes), 1., 1.) for x in range(len(classes))]
+    colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
+    colors = list(
+        map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)),
+            colors))
+    colors = {k: v for k, v in zip(classes, colors)}
 
 
 def detect_video(video_path, output_path, start=0, end=0, classes=None,
@@ -46,6 +53,9 @@ def detect_video(video_path, output_path, start=0, end=0, classes=None,
             break
 
         bboxes = detector(frame)
+        if colors is None:
+            set_colors([name for name in bboxes])
+
         print('当前时间进度：%.2f秒' % (msec/1000))
         image = draw_bboxes(frame, bboxes, classes=classes, colors=colors)
         out.write(image)
