@@ -8,8 +8,8 @@ from core.detectors import CornerNet_Saccade
 from core.vis_utils import draw_bboxes
 
 
-def detect_video(detector, video_path, output_path, start=0, end=0,
-                 forbid_box=None):
+def detect_video(video_path, output_path, start=0, end=0, forbid_box=None):
+    detector = CornerNet_Saccade()
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():
         raise IOError("Couldn't open webcam or video")
@@ -45,5 +45,4 @@ def detect_video(detector, video_path, output_path, start=0, end=0,
 
 if __name__ == '__main__':
     import fire
-    detector = CornerNet_Saccade()
     fire.Fire(detect_video)
