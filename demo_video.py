@@ -57,8 +57,11 @@ def detect_video(video_path, output_path, start=0, end=0, classes=None,
         if colors is None:
             set_colors([name for name in bboxes])
 
+        if classes is not None:
+            bboxes = {k: v for k, v in bboxes.items() if k in classes}
+
         print('当前时间进度：%.2f秒' % (msec/1000))
-        image = draw_bboxes(frame, bboxes, classes=classes, colors=colors)
+        image = draw_bboxes(frame, bboxes, colors=colors)
         out.write(image)
 
     print("width: %d, height: %d" % (width, height))
