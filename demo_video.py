@@ -39,7 +39,12 @@ def detect_video(video_path, output_path, start=0, end=0, classes=None,
     if classes is not None:
         classes = classes.split(',')
 
-    start *= 1000
+    if forbid_box is not None:
+        forbid_box = [[[int(x) for x in b.split(',')]
+                       for b in s.split(';')]
+                      for s in forbid_box.split('|')]
+
+    start, end = int(start)*1000, int(end)
     end = end if end == 0 else end*1000
     width, height = 0, 0
     while True:
